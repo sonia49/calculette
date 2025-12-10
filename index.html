@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculatrice Rose Rapide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        .bg-pink-vif { background-color: #ff99aa; }
+        .bg-pink-fonce { background-color: #e66474; }
+        .shadow-pink { box-shadow: 0 10px 15px -3px rgba(230, 100, 116, 0.5), 0 4px 6px -4px rgba(230, 100, 116, 0.3); }
+        button { user-select: none; -webkit-tap-highlight-color: transparent; }
+    </style>
+</head>
+<body class="bg-pink-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-sm bg-white rounded-3xl shadow-2xl shadow-pink p-6">
+        <h1 class="text-center text-3xl font-extrabold mb-6 text-pink-700">Calculatrice 💖</h1>
+
+        <input 
+            type="text" 
+            id="display" 
+            class="w-full h-20 mb-5 p-5 text-right text-5xl font-light rounded-xl bg-pink-50 border-2 border-pink-300 focus:outline-none focus:border-pink-500 transition-all text-pink-900" 
+            value="0" 
+            readonly
+        >
+
+        <div class="grid grid-cols-4 gap-3">
+            <button class="col-span-2 text-2xl p-4 rounded-xl bg-pink-fonce text-white font-semibold hover:opacity-80 transition" onclick="clearDisplay()">C</button>
+            <button class="text-2xl p-4 rounded-xl bg-pink-fonce text-white font-semibold hover:opacity-80 transition" onclick="deleteLast()">DEL</button>
+            <button class="text-2xl p-4 rounded-xl bg-pink-fonce text-white font-semibold hover:opacity-80 transition" onclick="appendToDisplay('/')">÷</button>
+
+            <button class="text-2xl p-4 rounded-xl bg-pink-vif text-pink-900 font-semibold hover:bg-pink-fonce hover:text-white transition" onclick="appendToDisplay('7')">7</button>
+            <button class="text-2xl p-4 rounded-xl bg-pink-vif text-pink-900 font-semibold hover:bg-pink-fonce hover:text-white transition" onclick="appendToDisplay('8')">8</button>
+            <button class="text-2xl p-4 rounded-xl bg-pink-vif text-pink-900 font-semibold hover:bg-pink-fonce hover:text-white transition" onclick="appendToDisplay('9')">9</button>
+            <button class="text-2xl p-4 rounded-xl bg-pink-fonce text-white font-semibold hover:opacity-80 transition" onclick="appendToDisplay('*')">x</button>
+
+            <button class="text-2xl p-4 rounded-xl bg-pink-vif text-pink-900 font-semibold hover:bg-pink-fonce hover:text-white transition" onclick="appendToDisplay('4')">4</button>
+            <button class="text-2xl p-4 rounded-xl bg-pink-vif text-pink-900 font-semibold hover:bg-pink-fonce hover:text-white transition" onclick="appendToDisplay('5')">5</button>
+            <button class="text-2xl p-4 rounded-xl bg-pink-vif text-pink-900 font-semibold hover:bg-pink-fonce hover:text-white transition" onclick="appendToDisplay('6')">6</button>
+            <button class="text-2xl p-4 rounded-xl bg-pink-fonce text-white font-semibold hover:opacity-80 transition" onclick="appendToDisplay('-')">-</button>
+
+            <button class="text-2xl p-4 rounded-xl bg-pink-vif text-pink-900 font-semibold hover:bg-pink-fonce hover:text-white transition" onclick="appendToDisplay('1')">1</button>
+            <button class="text-2xl p-4 rounded-xl bg-pink-vif text-pink-900 font-semibold hover:bg-pink-fonce hover:text-white transition" onclick="appendToDisplay('2')">2</button>
+            <button class="text-2xl p-4 rounded-xl bg-pink-vif text-pink-900 font-semibold hover:bg-pink-fonce hover:text-white transition" onclick="appendToDisplay('3')">3</button>
+            <button class="text-2xl p-4 rounded-xl bg-pink-fonce text-white font-semibold hover:opacity-80 transition" onclick="appendToDisplay('+')">+</button>
+
+            <button class="col-span-2 text-2xl p-4 rounded-xl bg-pink-vif text-pink-900 font-semibold hover:bg-pink-fonce hover:text-white transition" onclick="appendToDisplay('0')">0</button>
+            <button class="text-2xl p-4 rounded-xl bg-pink-vif text-pink-900 font-semibold hover:bg-pink-fonce hover:text-white transition" onclick="appendToDisplay('.')">.</button>
+            <button class="text-2xl p-4 rounded-xl bg-pink-fonce text-white font-semibold hover:opacity-80 transition" onclick="calculateResult()">=</button>
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+
+        function appendToDisplay(value) {
+            if (display.value === '0' && ['1','2','3','4','5','6','7','8','9'].includes(value)) {
+                display.value = value;
+            } else if (display.value === '0' && ['+','-','*','/'].includes(value)) {
+                return;
+            }
+            else {
+                display.value = display.value === '0' && value !== '.' ? value : display.value + value;
+            }
+        }
+
+        function clearDisplay() { display.value = '0'; }
+
+        function deleteLast() {
+            display.value = display.value.length > 1 ? display.value.slice(0, -1) : '0';
+        }
+
+        function calculateResult() {
+            try {
+                const expression = display.value.replace(/x/g, '*');
+                const result = new Function('return ' + expression)();
+                display.value = parseFloat(result.toFixed(8));
+            } catch (error) {
+                display.value = 'Erreur';
+                setTimeout(() => clearDisplay(), 1000);
+            }
+        }
+    </script>
+</body>
+</html>
